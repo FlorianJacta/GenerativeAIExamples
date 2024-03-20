@@ -1,5 +1,5 @@
-from pages.knowledge_base import knowledge_base, uploaded_file_paths, change_config
-from pages.multimodel_assistant import multimodal_assistant, create_conv, create_document_section, query_embedder, retriever
+from pages.knowledge_base import knowledge_base, uploaded_file_paths, change_config, filelist
+from pages.multimodel_assistant import multimodal_assistant, create_conv, create_document_section, query_embedder, retriever, vector_client
 from taipy.gui import Gui, State, notify
 
 
@@ -30,6 +30,7 @@ if __name__ == "__main__":
     gui = Gui(pages=pages)
     conv = gui.add_partial("") # conv is the chat between the assistant and the user
     document_section = gui.add_partial("")
+    gui.add_shared_variables(retriever, query_embedder, vector_client, filelist)
     gui.run(title="Multimodal Assistant",
             dark_mode=False,
             debug=True,

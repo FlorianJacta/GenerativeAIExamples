@@ -127,13 +127,13 @@ with tgb.Page() as multimodal_assistant:
     with tgb.layout("2 8", columns__mobile="2 8", gap="50px"):
         with tgb.part("sidebar"):
             tgb.text("Powered by Taipy and NVIDIA")
-            tgb.text("Assistant mode", class_name="h4")
+            tgb.text("#### Assistant mode", mode="md")
             tgb.text("Select a configuration/type of bot")
             tgb.selector(value="{mode}", lov=["multimodal"], dropdown=True, class_name="fullwidth", on_change=change_config, label="Mode")
             
             tgb.html("hr")
             
-            tgb.text("Image Input Query", class_name="h4")
+            tgb.text("#### Image Input Query", mode="md")
             tgb.text("Upload an image (JPG/JPEG/PNG):")
             # TODO: Allow multiple images
             tgb.file_selector(content="{image_path}", on_action=on_image_upload,
@@ -145,7 +145,7 @@ with tgb.Page() as multimodal_assistant:
             tgb.image('{image_path}', width="100%")
 
             with tgb.part(render='{image_query}'):
-                tgb.text('Image Description', class_name="h5")
+                tgb.text('##### Image Description', mode="md")
                 tgb.text('{image_query}')
 
         with tgb.part():
@@ -163,6 +163,7 @@ with tgb.Page() as multimodal_assistant:
                 with tgb.part("card mt1"): # UX concerns
                     tgb.input("{current_user_message}", on_action=send_message, change_delay=-1, label="Write your message:",  class_name="fullwidth")
 
+            tgb.html("hr")
 
             with tgb.expandable(title="Summary", expanded=False):
                 tgb.text("{summary}", mode="md")
@@ -182,8 +183,8 @@ def create_document_section(state):
                             download_path = source_str.split("page")[0].strip("-")+".pdf"
                             file_name = os.path.basename(download_path)
                             try:
-                                tgb.text("Document: "+file_name, class_name="h3 p1")
-                                tgb.text("Page: "+source_str.split("page")[1].strip("block").strip("-"), class_name="h4 p1")
+                                tgb.text("### Document: "+file_name, mode="md")
+                                tgb.text("#### Page: "+source_str.split("page")[1].strip("block").strip("-"), mode="md")
                                 tgb.file_download(content=download_path, label=file_name)
                             except:
                                 print("failed to provide download for ", file_name)
@@ -212,7 +213,7 @@ def create_document_section(state):
                             image_path = source["doc_metadata"]["image"]
                             tgb.image(image_path)
                         else:
-                            tgb.text("Content", class_name="h4 p1")
+                            tgb.text("#### Content", mode="md")
                             tgb.text(source["doc_content"], mode="pre")
                     tgb.html('hr')
         except Exception as e:

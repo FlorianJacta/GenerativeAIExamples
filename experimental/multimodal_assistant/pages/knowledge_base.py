@@ -122,13 +122,13 @@ with tgb.Page() as knowledge_base:
     with tgb.layout("2 8", columns__mobile="2 8", gap="50px"):
         with tgb.part("sidebar"):
             tgb.text("Powered by Taipy and NVIDIA")
-            tgb.text("Assistant mode", class_name="h4")
+            tgb.text("### Assistant mode", mode="md")
             tgb.text("Select a configuration of bot")
             tgb.selector(value="{mode}", lov=["multimodal"], on_change=change_config, dropdown=True, class_name="fullwidth", label="Mode")
 
         with tgb.part():
             tgb.navbar()
-            tgb.text("Contribute to the Multimodal Assistant Knowledge Base", class_name="h2")
+            tgb.text("## Contribute to the Multimodal Assistant Knowledge Base", mode="md")
             tgb.text("Upload a file to Multimodal Assistant's Knowledge Base")
 
             tgb.html("br")
@@ -140,7 +140,7 @@ with tgb.Page() as knowledge_base:
 
             tgb.html("hr")
             
-            tgb.text("Re-train model to use the new information you uploaded", class_name="h2")
+            tgb.text("## Re-train model to use the new information you uploaded", mode="md")
             tgb.text("This section will rerun the information chunking and vector storage algorithms on all documents again. ONLY run if you have uploaded new documents! Note that this can take a minute or more, depending on the number of documents and the sizes.")
 
             tgb.html("br")
@@ -150,7 +150,7 @@ with tgb.Page() as knowledge_base:
 
             tgb.html("hr")
 
-            tgb.text("View/Modify the current Knowledge Base", class_name="h2")
+            tgb.text("## View/Modify the current Knowledge Base", mode="md")
             tgb.text("The following files/documents are ingested and used as part of Multimodal Assistant's knowledge base.")
             tgb.selector(value="{selected_file}", lov="{filelist}", dropdown=True, label="Files in Knowledge Base", class_name="fullwidth")
 
