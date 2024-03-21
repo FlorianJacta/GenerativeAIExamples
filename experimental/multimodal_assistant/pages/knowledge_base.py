@@ -91,12 +91,13 @@ def when_retrain(state, status):
     """
     global progress_for_logs
 
-    state.logs_for_retraining = "\n".join(progress_for_logs[get_state_id(state)]['retraining_logs'])
-
     # if the retraining is finished
-    if isinstance(status, bool):
-        state.logs_for_retraining = "" 
+    if isinstance(status, bool) and status:
+        state.logs_for_retraining = ""
+        progress_for_logs[get_state_id(state)]['retraining_logs'] = [""]
         change_config(state)
+    else:
+        state.logs_for_retraining = "\n".join(progress_for_logs[get_state_id(state)]['retraining_logs'])
 
 def retrain(state):
     """
@@ -129,9 +130,7 @@ with tgb.Page() as knowledge_base:
         with tgb.part():
             tgb.navbar()
             tgb.text("## Contribute to the Multimodal Assistant Knowledge Base", mode="md")
-            tgb.text("Upload a file to Multimodal Assistant's Knowledge Base")
-
-            tgb.html("br")
+            tgb.text("Upload a file to Multimodal Assistant's Knowledge Base:")
 
             tgb.file_selector(content="{uploaded_file_paths}", 
                               multiple=True,
@@ -143,9 +142,7 @@ with tgb.Page() as knowledge_base:
             tgb.text("## Re-train model to use the new information you uploaded", mode="md")
             tgb.text("This section will rerun the information chunking and vector storage algorithms on all documents again. ONLY run if you have uploaded new documents! Note that this can take a minute or more, depending on the number of documents and the sizes.")
 
-            tgb.html("br")
-
-            tgb.button("Re-train Multimodal Assistant", on_action=retrain, class_name="plain")
+            tgb.button("Re-train Multimodal Assistant", on_action=retrain, active="{logs_for_retraining==''}", class_name="plain")
             tgb.text("{logs_for_retraining}", mode="pre")
 
             tgb.html("hr")

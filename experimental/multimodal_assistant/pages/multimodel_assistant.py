@@ -80,9 +80,7 @@ def send_message_asynchronous(retriever, current_user_message, messages, state_i
     res = fact_check(context, current_user_message, full_response)
     fact_check_response = "".join(res)
     right_or_wrong = fact_check_response.split(' ')[0]
-    messages.append({"role": "assistant", 
-                     "style": right_or_wrong.replace('|', ''), 
-                     "content": response_to_text(fact_check_response.replace(right_or_wrong, ''))})
+    messages.append({"role": "assistant", "style": right_or_wrong.replace('|', ''), "content": response_to_text(fact_check_response.replace(right_or_wrong, ''))})
 
     progress_for_logs[state_id]['message_logs'].append("Step 5/5: Getting summary...")
     summary = get_summary(memory)
@@ -91,17 +89,19 @@ def send_message_asynchronous(retriever, current_user_message, messages, state_i
 def when_chat_answers(state, status, res):
     """Updates the logs periodically and when the chat answers are ready, update the UI"""
     global progress_for_logs
-    state.logs_for_messages = "\n".join(progress_for_logs[get_state_id(state)]['message_logs'])
     
-    if isinstance(status, bool):
+    if isinstance(status, bool) and status:
         state.messages, state.summary, state.sources = res
         state.current_user_message = ""
         state.image_query = ""
         state.image_path = None
-        state.logs_for_messages = None
+        state.logs_for_messages = ""
+        progress_for_logs[get_state_id(state)]['message_logs'] = [""]
         state.conv.update_content(state, create_conv(state))
         state.document_section.update_content(state, create_document_section(state))
         notify(state, "success", "Response received!")
+    else:
+        state.logs_for_messages = "\n".join(progress_for_logs[get_state_id(state)]['message_logs'])
 
 def send_message(state: State) -> None:
     """Send a message and get an answer asynchronously"""

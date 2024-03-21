@@ -1,4 +1,4 @@
-from pages.knowledge_base import knowledge_base, uploaded_file_paths, change_config, filelist
+from pages.knowledge_base import knowledge_base, uploaded_file_paths, change_config, filelist, logs_for_retraining
 from pages.multimodel_assistant import multimodal_assistant, create_conv, create_document_section, query_embedder, retriever, vector_client
 from taipy.gui import Gui, State, notify
 
@@ -17,9 +17,10 @@ def on_exception(state: State, function_name: str, ex: Exception):
     """Called when an exception is raised in a function"""
     notify(state, "e", f"A problem occured in {function_name}")
     print(f"Exception in {function_name}:\n{ex}")
-    notify(state, 'error', 'Reinitializing application in an attempt to solve the issue')
+    notify(state, 'warning', 'Reinitializing application in an attempt to solve the issue')
     change_config(state)
     on_init(state)
+    state.logs_for_retraining = ""
 
 pages = {
     "Multimodal_Assistant": multimodal_assistant,
@@ -30,9 +31,8 @@ if __name__ == "__main__":
     gui = Gui(pages=pages)
     conv = gui.add_partial("") # conv is the chat between the assistant and the user
     document_section = gui.add_partial("")
-    gui.add_shared_variables(retriever, query_embedder, vector_client, filelist)
+    gui.add_shared_variables("retriever", "query_embedder", "vector_client", "filelist", "logs_for_retraining")
     gui.run(title="Multimodal Assistant",
             dark_mode=False,
-            debug=True,
             host='0.0.0.0',
             margin="0px")
